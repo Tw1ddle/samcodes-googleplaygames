@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="signin_other_error">Failed to sign in, please try again later.</string>
+</resources>
