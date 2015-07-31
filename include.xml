@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project>	
+<project>
+	<classpath name="src" />
+	
 	<section if="android">
 		<haxelib name="openfl-gps-lib" /> 
-		<dependency name="googleplaygames" path="dependencies/googleplaygames"/>
+		<dependency name="googleplaygames" path="dependencies/samcodes-googleplaygames" />
+		<android extension="com.samcodes.googleplaygames.GooglePlayGames" />
 	</section>
 </project>
