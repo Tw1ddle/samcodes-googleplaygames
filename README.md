@@ -1,4 +1,6 @@
-# samcodes-googleplaygames
+# Haxe Google Play Games
+
+WORK IN PROGRESS
 
 Unofficial Google Play Games leaderboards and achievements support for Android Haxe/OpenFL targets using the new GoogleApiClient model.
 
