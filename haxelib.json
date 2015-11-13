@@ -2,7 +2,7 @@
 	"name": "samcodes-googleplaygames",
 	"url": "http://samcodes.co.uk/code/",
 	"license": "MIT",
-	"tags": ["api",google-play-games","googleplaygames","gpg","android","games","openfl"],
+	"tags": ["api","google-play-games","googleplaygames","gpg","android","games","openfl"],
 	"description": "Google Play Games leaderboards and achievements for Android",
 	"version": "1.0.0",
 	"releasenote": "Initial release",
