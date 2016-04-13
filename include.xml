@@ -3,6 +3,7 @@
 	<classpath name="src" />
 	
 	<section if="android">
+		<haxelib name="extension-android-support-v4" />
 		<haxelib name="extension-googleplayservices-lib" /> 
 		<dependency name="googleplaygames" path="dependencies/samcodes-googleplaygames" />
 		<android extension="com.samcodes.googleplaygames.GooglePlayGames" />
