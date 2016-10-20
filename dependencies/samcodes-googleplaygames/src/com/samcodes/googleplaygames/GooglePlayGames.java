@@ -31,7 +31,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 	private static HaxeObject callback = null;
 	
 	private static GoogleApiClient googleApiClient = null; // Initialized in onCreate
-	private boolean autoSignIn = false; // Whether to sign in automatically on launch
+	private boolean autoSignIn = true; // Whether to sign in automatically on launch
 	private boolean resolvingConnectionFailure = false; // Set to true when you're in the middle of the sign in flow, to know you should not attempt to connect in onStart()
 	
 	public GooglePlayGames() {
@@ -206,7 +206,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		}
 	}
 	
-	public static void connect() {		
+	public static void connect() {
 		Log.i(tag, "connect");
 		
 		if(googleApiClient == null) {
@@ -222,7 +222,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		googleApiClient.connect();
 	}
 	
-	public static void disconnect() {		
+	public static void disconnect() {
 		Log.i(tag, "disconnect");
 		
 		if(googleApiClient == null) {
