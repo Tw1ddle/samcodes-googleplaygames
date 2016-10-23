@@ -37,6 +37,10 @@ class GooglePlayGames {
 		reveal_achievement(id);
 	}
 	
+	public static function revealAchievementImmediate(id:String):Void {
+		reveal_achievement_immediate(id);
+	}
+	
 	public static function setAchievementSteps(id:String, numSteps:Int):Void {
 		set_achievement_steps(id, numSteps);
 	}
@@ -100,6 +104,10 @@ class GooglePlayGames {
 			reveal_achievement = openfl.utils.JNI.createStaticMethod(packageName, "revealAchievement", "(Ljava/lang/String;)V");
 		}
 		
+		if (reveal_achievement_immediate == null) {
+			reveal_achievement_immediate = openfl.utils.JNI.createStaticMethod(packageName, "revealAchievementImmediate", "(Ljava/lang/String;)V");
+		}
+		
 		if (set_achievement_steps == null) {
 			set_achievement_steps = openfl.utils.JNI.createStaticMethod(packageName, "setAchievementSteps", "(Ljava/lang/String;I)V");
 		}
@@ -143,6 +151,7 @@ class GooglePlayGames {
 	private static var show_achievements: Dynamic = null;
 	private static var increment_achievement: Dynamic = null;
 	private static var reveal_achievement: Dynamic = null;
+	private static var reveal_achievement_immediate: Dynamic = null;
 	private static var set_achievement_steps: Dynamic = null;
 	private static var unlock_achievement: Dynamic = null;
 	private static var submit_score: Dynamic = null;

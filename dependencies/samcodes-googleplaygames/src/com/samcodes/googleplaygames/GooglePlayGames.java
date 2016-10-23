@@ -172,6 +172,16 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		Games.Achievements.reveal(googleApiClient, id);
 	}
 	
+	public static void revealAchievementImmediate(String id) {
+		Log.i(tag, "revealAchievementImmediate");
+		
+		if(!checkClient()) {
+			return;
+		}
+		
+		Games.Achievements.revealImmediate(googleApiClient, id);
+	}
+	
 	public static void setAchievementSteps(String id, int numSteps) {
 		Log.i(tag, "setAchievementSteps");
 		
