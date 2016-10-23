@@ -1,10 +1,10 @@
-package extension;
-
-import extension.GooglePlayGravity.HorizontalGravity;
-import extension.GooglePlayGravity.VerticalGravity;
-import extension.GooglePlayLeaderboardTimespan.LeaderboardTimespan;
+package extension.googleplaygames;
 
 #if android
+
+import extension.googleplaygames.GooglePlayGravity;
+import extension.googleplaygames.GooglePlayLeaderboardTimespan;
+import extension.googleplaygames.GooglePlayListener;
 
 import openfl.utils.JNI;
 
@@ -13,7 +13,7 @@ class GooglePlayGames {
 		initBindings();
 	}
 	
-	public function setListener(listener:GooglePlayListener):Void {
+	public static function setListener(listener:GooglePlayListener):Void {
 		set_listener(listener);
 	}
 	
