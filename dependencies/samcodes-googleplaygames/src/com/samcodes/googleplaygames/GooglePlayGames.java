@@ -31,7 +31,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 	private static HaxeObject callback = null;
 	
 	private static GoogleApiClient googleApiClient = null; // Initialized in onCreate
-	private boolean autoSignIn = false; // Whether to sign in automatically on launch
+	private boolean autoSignIn = true; // Whether to sign in automatically on launch
 	private boolean resolvingConnectionFailure = false; // Set to true when you're in the middle of the sign in flow, to know you should not attempt to connect in onStart()
 	
 	public GooglePlayGames() {
@@ -155,6 +155,10 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 	public static void incrementAchievement(String id, int numSteps) {
 		Log.i(tag, "incrementAchievement");
 		
+		if(numSteps <= 0) {
+			return;
+		}
+		
 		if(!checkClient()) {
 			return;
 		}
@@ -172,8 +176,22 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		Games.Achievements.reveal(googleApiClient, id);
 	}
 	
+	public static void revealAchievementImmediate(String id) {
+		Log.i(tag, "revealAchievementImmediate");
+		
+		if(!checkClient()) {
+			return;
+		}
+		
+		Games.Achievements.revealImmediate(googleApiClient, id);
+	}
+	
 	public static void setAchievementSteps(String id, int numSteps) {
 		Log.i(tag, "setAchievementSteps");
+		
+		if(steps <= 0) {
+			return; // NOTE throws java.lang.IllegalStateException: Number of steps must be greater than 0 otherwise
+		}
 		
 		if(!checkClient()) {
 			return;
@@ -206,7 +224,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		}
 	}
 	
-	public static void connect() {		
+	public static void connect() {
 		Log.i(tag, "connect");
 		
 		if(googleApiClient == null) {
@@ -222,7 +240,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		googleApiClient.connect();
 	}
 	
-	public static void disconnect() {		
+	public static void disconnect() {
 		Log.i(tag, "disconnect");
 		
 		if(googleApiClient == null) {

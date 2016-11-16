@@ -3,9 +3,15 @@
 	<classpath name="src" />
 	
 	<section if="android">
+		<set name="google-play-services-basement" />
+		<set name="google-play-services-games" />
+		<set name="google-play-services-base" />
+		<set name="google-play-services-auth" />
+		<haxelib name="extension-googleplayservices-basement" />
+		
 		<haxelib name="extension-android-support-v4" />
-		<haxelib name="extension-googleplayservices-lib" /> 
-		<dependency name="googleplaygames" path="dependencies/samcodes-googleplaygames" />
+		
+		<dependency name="samcodes-googleplaygames" path="dependencies/samcodes-googleplaygames" />
 		<android extension="com.samcodes.googleplaygames.GooglePlayGames" />
 	</section>
 </project>

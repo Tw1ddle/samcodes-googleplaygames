@@ -9,6 +9,6 @@
 	"contributors": ["samcodes"],
 	"dependencies": {
 		"extension-android-support-v4": "",
-		"extension-googleplayservices-lib": ""
+		"extension-googleplayservices-basement": ""
 	}
 }

@@ -1,4 +1,4 @@
-package extension;
+package extension.googleplaygames;
 
 class GooglePlayListener {
 	public function new() {}
