@@ -189,7 +189,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 	public static void setAchievementSteps(String id, int numSteps) {
 		Log.i(tag, "setAchievementSteps");
 		
-		if(steps <= 0) {
+		if(numSteps <= 0) {
 			return; // NOTE throws java.lang.IllegalStateException: Number of steps must be greater than 0 otherwise
 		}
 		
