@@ -8,7 +8,6 @@
 	"releasenote": "Runtime fix for android 4.XX",
 	"contributors": ["samcodes"],
 	"dependencies": {
-		"extension-android-support-v4": "",
-		"extension-googleplayservices-basement": ""
+		"google-play-services" : ""
 	}
 }

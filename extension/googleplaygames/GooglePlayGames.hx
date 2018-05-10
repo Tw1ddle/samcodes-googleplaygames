@@ -6,7 +6,7 @@ import extension.googleplaygames.GooglePlayGravity;
 import extension.googleplaygames.GooglePlayLeaderboardTimespan;
 import extension.googleplaygames.GooglePlayListener;
 
-import openfl.utils.JNI;
+import lime.system.JNI;
 
 class GooglePlayGames {
 	public static function init() {
@@ -85,63 +85,63 @@ class GooglePlayGames {
 		}
 		
 		if (show_leaderboard == null) {
-			show_leaderboard = openfl.utils.JNI.createStaticMethod(packageName, "showLeaderboard", "(Ljava/lang/String;I)V");
+			show_leaderboard = JNI.createStaticMethod(packageName, "showLeaderboard", "(Ljava/lang/String;I)V");
 		}
 		
 		if (show_leaderboards == null) {
-			show_leaderboards = openfl.utils.JNI.createStaticMethod(packageName, "showLeaderboards", "()V");
+			show_leaderboards = JNI.createStaticMethod(packageName, "showLeaderboards", "()V");
 		}
 		
 		if (show_achievements == null) {
-			show_achievements = openfl.utils.JNI.createStaticMethod(packageName, "showAchievements", "()V");
+			show_achievements = JNI.createStaticMethod(packageName, "showAchievements", "()V");
 		}
 		
 		if (increment_achievement == null) {
-			increment_achievement = openfl.utils.JNI.createStaticMethod(packageName, "incrementAchievement", "(Ljava/lang/String;I)V");
+			increment_achievement = JNI.createStaticMethod(packageName, "incrementAchievement", "(Ljava/lang/String;I)V");
 		}
 
 		if(reveal_achievement == null) {
-			reveal_achievement = openfl.utils.JNI.createStaticMethod(packageName, "revealAchievement", "(Ljava/lang/String;)V");
+			reveal_achievement = JNI.createStaticMethod(packageName, "revealAchievement", "(Ljava/lang/String;)V");
 		}
 		
 		if (reveal_achievement_immediate == null) {
-			reveal_achievement_immediate = openfl.utils.JNI.createStaticMethod(packageName, "revealAchievementImmediate", "(Ljava/lang/String;)V");
+			reveal_achievement_immediate = JNI.createStaticMethod(packageName, "revealAchievementImmediate", "(Ljava/lang/String;)V");
 		}
 		
 		if (set_achievement_steps == null) {
-			set_achievement_steps = openfl.utils.JNI.createStaticMethod(packageName, "setAchievementSteps", "(Ljava/lang/String;I)V");
+			set_achievement_steps = JNI.createStaticMethod(packageName, "setAchievementSteps", "(Ljava/lang/String;I)V");
 		}
 		
 		if (unlock_achievement == null) {
-			unlock_achievement = openfl.utils.JNI.createStaticMethod(packageName, "unlockAchievement", "(Ljava/lang/String;)V");
+			unlock_achievement = JNI.createStaticMethod(packageName, "unlockAchievement", "(Ljava/lang/String;)V");
 		}
 		
 		if (submit_score == null) {
-			submit_score = openfl.utils.JNI.createStaticMethod(packageName, "submitScore", "(Ljava/lang/String;ILjava/lang/String;)V");
+			submit_score = JNI.createStaticMethod(packageName, "submitScore", "(Ljava/lang/String;ILjava/lang/String;)V");
 		}
 		
 		if (connect == null) {
-			connect = openfl.utils.JNI.createStaticMethod(packageName, "connect", "()V");
+			connect = JNI.createStaticMethod(packageName, "connect", "()V");
 		}
 		
 		if (disconnect == null) {
-			disconnect = openfl.utils.JNI.createStaticMethod(packageName, "disconnect", "()V");
+			disconnect = JNI.createStaticMethod(packageName, "disconnect", "()V");
 		}
 		
 		if (reconnect == null) {
-			reconnect = openfl.utils.JNI.createStaticMethod(packageName, "reconnect", "()V");
+			reconnect = JNI.createStaticMethod(packageName, "reconnect", "()V");
 		}
 		
 		if (is_connected == null) {
-			is_connected = openfl.utils.JNI.createStaticMethod(packageName, "isConnected", "()Z");
+			is_connected = JNI.createStaticMethod(packageName, "isConnected", "()Z");
 		}
 		
 		if (get_current_account_name == null) {
-			get_current_account_name = openfl.utils.JNI.createStaticMethod(packageName, "getCurrentAccountName", "()Ljava/lang/String;");
+			get_current_account_name = JNI.createStaticMethod(packageName, "getCurrentAccountName", "()Ljava/lang/String;");
 		}
 		
 		if (set_gravity_for_popups == null) {
-			set_gravity_for_popups = openfl.utils.JNI.createStaticMethod(packageName, "setGravityForPopups", "(II)V");
+			set_gravity_for_popups = JNI.createStaticMethod(packageName, "setGravityForPopups", "(II)V");
 		}
 	}
 

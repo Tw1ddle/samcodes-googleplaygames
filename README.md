@@ -1,6 +1,6 @@
 # Haxe Google Play Games
 
-Unofficial Google Play Games leaderboards and achievements support for Android Haxe/OpenFL targets using the new GoogleApiClient model.
+Unofficial Google Play Games leaderboards and achievements support for Android Haxe/OpenFL targets using the GoogleApiClient model.
 
 ### Features ###
 
@@ -15,7 +15,7 @@ Doesn't Support:
 * Cloud syncing, multiplayer or social features.
 * Fetching leaderboard/achievement/player data from the Google servers.
 
-If there is something you would like adding let me know. Pull requests welcomed too! Here it is in action:
+If there is something you would like adding then open an issue. Pull requests welcomed too! Here it is in action:
 
 ![Screenshot of it working](https://github.com/Tw1ddle/samcodes-googleplaygames/blob/master/screenshots/screen1.png?raw=true "Screenshot")
 

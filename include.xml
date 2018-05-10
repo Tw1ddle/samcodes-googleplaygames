@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project>
-	<classpath name="src" />
-	
+<extension>
 	<section if="android">
-		<set name="google-play-services-basement" />
-		<set name="google-play-services-games" />
-		<set name="google-play-services-base" />
-		<set name="google-play-services-auth" />
-		<haxelib name="extension-googleplayservices-basement" />
+		<!-- See: https://github.com/player-03/google-play-services -->
+		<set name="playServicesVersion" value="+" unless="playServicesVersion" />
 		
-		<haxelib name="extension-android-support-v4" />
+		<set name="google-play-game-services" />
+		<set name="support-compat" />
+		
+		<haxelib name="google-play-services" />
 		
 		<dependency name="samcodes-googleplaygames" path="dependencies/samcodes-googleplaygames" />
 		<android extension="com.samcodes.googleplaygames.GooglePlayGames" />
 	</section>
-</project>
+</extension>
