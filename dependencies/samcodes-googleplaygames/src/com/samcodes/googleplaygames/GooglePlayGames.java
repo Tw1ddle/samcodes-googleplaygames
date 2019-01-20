@@ -32,8 +32,7 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 	
 	private static GoogleApiClient googleApiClient = null; // Initialized in onCreate
 	private boolean autoSignIn = true; // Whether to sign in automatically on launch
-	private boolean resolvingConnectionFailure = false; // Set to true when you're in the middle of the sign in flow, to know you should not attempt to connect in onStart()
-	
+
 	public GooglePlayGames() {
 		Log.d(tag, "Constructed SamcodesGooglePlayGames");
 	}
@@ -57,46 +56,48 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 		});
 	}
 	
+	@Override
 	public void onStart() {
 		super.onStart();
 		Log.i(tag, "Starting SamcodesGooglePlayGames");
 		
-		if(autoSignIn && !resolvingConnectionFailure) {
+		if(autoSignIn) {
 			googleApiClient.connect();
 		}
 	}
 
+	@Override
 	public void onStop() {
 		Log.i(tag, "Stopping SamcodesGooglePlayGames");
 		googleApiClient.disconnect();
 		super.onStop();
 	}
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Log.i(tag, "Creating Google API client instance");
+		
 		googleApiClient = new GoogleApiClient.Builder(mainActivity).addApi(Games.API).addScope(Games.SCOPE_GAMES).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
 	}
 	
 	@Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(tag, "onActivityResult");
 		callHaxe("onActivityResult", new Object[] { requestCode, resultCode });
 		
 		return super.onActivityResult(requestCode, resultCode, data);
-    }
+	}
 	
-    @Override
-    public void onConnected(Bundle connectionHint) {
+	@Override
+	public void onConnected(Bundle connectionHint) {
 		Log.i(tag, "onConnected");
 		callHaxe("onConnected", new Object[] {});
-    }
+	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
-		if (resolvingConnectionFailure) {
-			return;
-		}
-		
 		Log.i(tag, "onConnectionFailed");
 		callHaxe("onConnectionFailed", new Object[] { connectionResult.getErrorCode() });
 	}
@@ -105,6 +106,11 @@ public class GooglePlayGames extends Extension implements GoogleApiClient.Connec
 	public void onConnectionSuspended(int i) {
 		Log.i(tag, "onConnectionSuspended");
 		callHaxe("onConnectionSuspended", new Object[] { i });
+		
+		if(!checkClient()) {
+			return;
+		}
+		
 		googleApiClient.connect();
 	}
 	
