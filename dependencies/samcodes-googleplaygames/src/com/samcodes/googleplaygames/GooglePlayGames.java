@@ -44,7 +44,7 @@ public class GooglePlayGames extends Extension {
 	private static final int REQUEST_SHOW_LEADERBOARDS = 100;
 	private static final int REQUEST_SHOW_ACHIEVEMENTS = 101;
 
-	private static final int SILENT_SIGNIN_FAILED_NEED_USER_LOGIN = 0; // Error code used when silent signin fails and the user needs to sign in/authenticate via the UI
+	private static final int SILENT_SIGNIN_FAILED_NEED_USER_LOGIN = 1000000; // Custom error code used when silent signin fails and the user needs to sign in/authenticate via the UI
 
 	private static HaxeObject callback = null;
 	
@@ -89,6 +89,13 @@ public class GooglePlayGames extends Extension {
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.w(tag, "onActivityResult");
 		callHaxe("onActivityResult", new Object[] { requestCode, resultCode });
+		
+		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+		if (requestCode == GooglePlayGames.RC_SIGN_IN) {
+			// The Task returned from this call is always completed, no need to attach a listener.
+			Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+			handleSignInResult(task);
+		}
 		
 		return super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -517,6 +524,33 @@ public class GooglePlayGames extends Extension {
 				callback.call(name, args);
 			}
 		});
+	}
+	
+	private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+		if(completedTask == null) {
+			Log.w(tag, "Sign in result returned a null task. This should never happen");
+			return;
+		}
+		
+		try {
+			GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+			
+			callHaxe("onConnected", new Object[] {});
+			
+		} catch (ApiException e) {
+			if(e == null) {
+				Log.w(tag, "ApiException was null, will fail to report sign in failure");
+			}
+			
+			// The ApiException status code indicates the detailed failure reason.
+			// Refer to the GoogleSignInStatusCodes class reference for more information.
+			// Note, in principle this could also be one of the other CommonStatusCodes
+			Log.w(tag, "Sign in result contained a failure code of: " + e.getStatusCode());
+			
+			int statusCode = (int)(e.getStatusCode());
+			
+			callHaxe("onConnectionFailed", new Object[] { statusCode });
+		}
 	}
 	
 	private static GoogleSignInAccount getLastSignedInAccount() {
