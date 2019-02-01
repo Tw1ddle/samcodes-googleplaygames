@@ -56,8 +56,8 @@ class GooglePlayGames {
 		submit_score(leaderboardId, score, scoreTag);
 	}
 	
-	public static function signIn():Void {
-		sign_in();
+	public static function signIn(viaAuthDialogIfNecessary:Bool = true):Void {
+		sign_in(viaAuthDialogIfNecessary);
 	}
 	
 	public static function signOut():Void {
@@ -87,7 +87,7 @@ class GooglePlayGames {
 	private static var set_achievement_steps = bindJNI("setAchievementSteps", "(Ljava/lang/String;I)V");
 	private static var unlock_achievement = bindJNI("unlockAchievement", "(Ljava/lang/String;)V");
 	private static var submit_score = bindJNI("submitScore", "(Ljava/lang/String;ILjava/lang/String;)V");
-	private static var sign_in = bindJNI("signIn", "()V");
+	private static var sign_in = bindJNI("signIn", "(Z)V");
 	private static var sign_out = bindJNI("signOut", "()V");
 	private static var is_signed_in = bindJNI("isSignedIn", "()Z");
 	private static var set_gravity_for_popups = bindJNI("setGravityForPopups", "(II)V");

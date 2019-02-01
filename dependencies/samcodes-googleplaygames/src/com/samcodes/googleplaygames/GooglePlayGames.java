@@ -93,7 +93,7 @@ public class GooglePlayGames extends Extension {
 		return super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-	public static void signIn() {
+	public static void signIn(boolean viaAuthDialogIfNecessary) {
 		Log.w(tag, "signIn");
 		
 		if(!isGooglePlayServicesAvailable()) {
@@ -101,7 +101,11 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
-		signInSilently();
+		if(viaAuthDialogIfNecessary) {
+			signInViaDialogIfNecessary();
+		} else {
+			signInSilently();
+		}
 	}
 	
 	public static void signOut() {
@@ -425,7 +429,7 @@ public class GooglePlayGames extends Extension {
 		gamesClient.setGravityForPopups(horizontalGravity | verticalGravity);
 	}
 	
-	public static void signInSilently() {
+	private static void signInSilently() {
 		Log.w(tag, "signInSilently");
 		
 		if(!isGooglePlayServicesAvailable()) {
@@ -452,7 +456,33 @@ public class GooglePlayGames extends Extension {
 		});
 	}
 	
-	public static void startSignInIntent() {
+	private static void signInViaDialogIfNecessary() {
+		Log.w(tag, "signInViaDialogIfNecessary");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to sign in (via dialog if necessary), Google Play Services unavailable");
+			return;
+		}
+		
+		GoogleSignInClient signInClient = getSignInClient();
+		if(signInClient == null) {
+			Log.w(tag, "Will fail to sign in (via dialog if necessary), failed to get sign in client");
+			return;
+		}
+		
+		signInClient.silentSignIn().addOnCompleteListener(Extension.mainActivity, new OnCompleteListener<GoogleSignInAccount>() {
+			@Override
+			public void onComplete(Task<GoogleSignInAccount> task) {
+				if (task.isSuccessful()) {
+					callHaxe("onConnected", new Object[] {});
+				} else {
+					startSignInIntent();
+				}
+			}
+		});
+	}
+	
+	private static void startSignInIntent() {
 		Log.w(tag, "startSignInIntent");
 		
 		if(!isGooglePlayServicesAvailable()) {
