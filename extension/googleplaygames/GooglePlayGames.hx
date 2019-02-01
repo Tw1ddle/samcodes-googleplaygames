@@ -10,7 +10,6 @@ import lime.system.JNI;
 
 class GooglePlayGames {
 	public static function init() {
-		initBindings();
 	}
 	
 	public static function setListener(listener:GooglePlayListener):Void {
@@ -54,113 +53,39 @@ class GooglePlayGames {
 	}
 	
 	public static function signIn():Void {
-		connect();
+		sign_in();
 	}
 	
 	public static function signOut():Void {
-		disconnect();
+		sign_out();
 	}
 	
-	public static function resetConnection():Void {
-		reconnect();
-	}
-	
-	public static function isConnected():Bool {
-		return is_connected();
-	}
-	
-	public static function getCurrentAccountName():String {
-		return get_current_account_name();
+	public static function isSignedIn():Bool {
+		return is_signed_in();
 	}
 	
 	public static function setGravityForPopups(horizontalGravity:HorizontalGravity, verticalGravity:VerticalGravity):Void {
 		set_gravity_for_popups(horizontalGravity, verticalGravity);
 	}
-
-	private static function initBindings():Void {
-		var packageName:String = "com/samcodes/googleplaygames/GooglePlayGames";
-		
-		if (set_listener == null) {
-			set_listener = JNI.createStaticMethod(packageName, "setListener", "(Lorg/haxe/lime/HaxeObject;)V");
-		}
-		
-		if (show_leaderboard == null) {
-			show_leaderboard = JNI.createStaticMethod(packageName, "showLeaderboard", "(Ljava/lang/String;I)V");
-		}
-		
-		if (show_leaderboards == null) {
-			show_leaderboards = JNI.createStaticMethod(packageName, "showLeaderboards", "()V");
-		}
-		
-		if (show_achievements == null) {
-			show_achievements = JNI.createStaticMethod(packageName, "showAchievements", "()V");
-		}
-		
-		if (increment_achievement == null) {
-			increment_achievement = JNI.createStaticMethod(packageName, "incrementAchievement", "(Ljava/lang/String;I)V");
-		}
-
-		if(reveal_achievement == null) {
-			reveal_achievement = JNI.createStaticMethod(packageName, "revealAchievement", "(Ljava/lang/String;)V");
-		}
-		
-		if (reveal_achievement_immediate == null) {
-			reveal_achievement_immediate = JNI.createStaticMethod(packageName, "revealAchievementImmediate", "(Ljava/lang/String;)V");
-		}
-		
-		if (set_achievement_steps == null) {
-			set_achievement_steps = JNI.createStaticMethod(packageName, "setAchievementSteps", "(Ljava/lang/String;I)V");
-		}
-		
-		if (unlock_achievement == null) {
-			unlock_achievement = JNI.createStaticMethod(packageName, "unlockAchievement", "(Ljava/lang/String;)V");
-		}
-		
-		if (submit_score == null) {
-			submit_score = JNI.createStaticMethod(packageName, "submitScore", "(Ljava/lang/String;ILjava/lang/String;)V");
-		}
-		
-		if (connect == null) {
-			connect = JNI.createStaticMethod(packageName, "connect", "()V");
-		}
-		
-		if (disconnect == null) {
-			disconnect = JNI.createStaticMethod(packageName, "disconnect", "()V");
-		}
-		
-		if (reconnect == null) {
-			reconnect = JNI.createStaticMethod(packageName, "reconnect", "()V");
-		}
-		
-		if (is_connected == null) {
-			is_connected = JNI.createStaticMethod(packageName, "isConnected", "()Z");
-		}
-		
-		if (get_current_account_name == null) {
-			get_current_account_name = JNI.createStaticMethod(packageName, "getCurrentAccountName", "()Ljava/lang/String;");
-		}
-		
-		if (set_gravity_for_popups == null) {
-			set_gravity_for_popups = JNI.createStaticMethod(packageName, "setGravityForPopups", "(II)V");
-		}
+	
+	private static inline var packageName:String = "com/samcodes/googleplaygames/GooglePlayGames";
+	private static inline function bindJNI(jniMethod:String, jniSignature:String) {
+		return JNI.createStaticMethod(packageName, jniMethod, jniSignature);
 	}
-
-	private static var set_listener: Dynamic = null;
-	private static var show_leaderboard: Dynamic = null;
-	private static var show_leaderboards: Dynamic = null;
-	private static var show_achievements: Dynamic = null;
-	private static var increment_achievement: Dynamic = null;
-	private static var reveal_achievement: Dynamic = null;
-	private static var reveal_achievement_immediate: Dynamic = null;
-	private static var set_achievement_steps: Dynamic = null;
-	private static var unlock_achievement: Dynamic = null;
-	private static var submit_score: Dynamic = null;
-	private static var connect: Dynamic = null;
-	private static var disconnect: Dynamic = null;
-	private static var reconnect: Dynamic = null;
-	private static var is_connected: Dynamic = null;
-	private static var get_current_account_name: Dynamic = null;
-	private static var set_gravity_for_popups: Dynamic = null;
+	private static var set_listener = bindJNI("setListener", "(Lorg/haxe/lime/HaxeObject;)V");
+	private static var show_leaderboard = bindJNI("showLeaderboard", "(Ljava/lang/String;I)V");
+	private static var show_leaderboards = bindJNI("showLeaderboards", "()V");
+	private static var show_achievements = bindJNI("showAchievements", "()V");
+	private static var increment_achievement = bindJNI("incrementAchievement", "(Ljava/lang/String;I)V");
+	private static var reveal_achievement = bindJNI("revealAchievement", "(Ljava/lang/String;)V");
+	private static var reveal_achievement_immediate = bindJNI("revealAchievementImmediate", "(Ljava/lang/String;)V");
+	private static var set_achievement_steps = bindJNI("setAchievementSteps", "(Ljava/lang/String;I)V");
+	private static var unlock_achievement = bindJNI("unlockAchievement", "(Ljava/lang/String;)V");
+	private static var submit_score = bindJNI("submitScore", "(Ljava/lang/String;ILjava/lang/String;)V");
+	private static var sign_in = bindJNI("signIn", "()V");
+	private static var sign_out = bindJNI("signOut", "()V");
+	private static var is_signed_in = bindJNI("isSignedIn", "()Z");
+	private static var set_gravity_for_popups = bindJNI("setGravityForPopups", "(II)V");
 }
 
 #end

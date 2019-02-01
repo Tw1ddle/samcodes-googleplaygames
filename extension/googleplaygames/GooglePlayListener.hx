@@ -11,10 +11,6 @@ class GooglePlayListener {
 		
 	}
 	
-	public function onConnectionSuspended(reason:Int) {
-		
-	}
-	
 	public function onConnectionFailed(errorCode:Int) {
 		
 	}
