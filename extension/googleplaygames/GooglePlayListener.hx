@@ -11,7 +11,7 @@ class GooglePlayListener {
 		
 	}
 	
-	public function onConnectionFailed(errorCode:Int) {
+	public function onConnectionFailed(errorCode:GooglePlayConnectionFailureReason) {
 		
 	}
 	

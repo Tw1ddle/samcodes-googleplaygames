@@ -20,6 +20,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.AnnotatedData;
@@ -36,13 +38,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import android.app.Activity;
-
 public class GooglePlayGames extends Extension {
 	private static final String tag = "SamcodesGooglePlayGames";
 	private static final int RC_SIGN_IN = 9001;
 	private static final int REQUEST_SHOW_LEADERBOARDS = 100;
 	private static final int REQUEST_SHOW_ACHIEVEMENTS = 101;
+
+	private static final int SILENT_SIGNIN_FAILED_NEED_USER_LOGIN = 0; // Error code used when silent signin fails and the user needs to sign in/authenticate via the UI
 
 	private static HaxeObject callback = null;
 	
@@ -52,41 +54,67 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void setListener(HaxeObject haxeCallback) {
-		Log.i(tag, "Setting GooglePlayGames listener");
+		Log.w(tag, "Setting GooglePlayGames listener");
 		callback = haxeCallback;
+	}
+	
+	public static boolean isGooglePlayServicesAvailable() {
+		GoogleApiAvailability googlePlayServicesAvailability = GoogleApiAvailability.getInstance();
+		
+		if(googlePlayServicesAvailability == null) {
+			Log.w(tag, "Failed to get Google Play Services availability singleton, will assume services are unavailable");
+			return false;
+		}
+		
+		return googlePlayServicesAvailability.isGooglePlayServicesAvailable(Extension.mainActivity) == ConnectionResult.SUCCESS;
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.i(tag, "Resuming SamcodesGooglePlayGames");
+		Log.w(tag, "Resuming SamcodesGooglePlayGames");
 		
 		// Since the state of the signed-in player can change when
 		// the activity is not in the foreground, we try to sign in
 		// silently when the app is brought back to foreground (onResume also triggers when the activity is launched)
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to sign in, Google Play Services unavailable");
+			return;
+		}
+		
 		signInSilently();
 	}
 	
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i(tag, "onActivityResult");
+		Log.w(tag, "onActivityResult");
 		callHaxe("onActivityResult", new Object[] { requestCode, resultCode });
 		
 		return super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	public static void signIn() {
-		Log.i(tag, "signIn");
+		Log.w(tag, "signIn");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to sign in, Google Play Services unavailable");
+			return;
+		}
 		
 		signInSilently();
 	}
 	
 	public static void signOut() {
-		Log.i(tag, "signOut");
+		Log.w(tag, "signOut");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to sign out, Google Play Services unavailable");
+			return;
+		}
 		
 		GoogleSignInClient signInClient = GoogleSignIn.getClient(Extension.mainActivity, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
 		if(signInClient == null) {
-			Log.w(tag, "Failed to get GoogleSignInClient");
+			Log.w(tag, "Will fail to sign out, failed to get signin client");
 			return;
 		}
 		
@@ -99,25 +127,38 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static boolean isSignedIn() {
-		Log.i(tag, "isSignedIn");
+		Log.w(tag, "isSignedIn");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to check sign in status, Google Play Services unavailable");
+			return false;
+		}
 		
 		return getLastSignedInAccount() != null;
 	}
 	
 	public static void showAchievements() {
-		Log.i(tag, "showAchievements");
+		Log.w(tag, "showAchievements");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail show achievements, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to show achivements, not signed in");
 			return;
 		}
 		
 		AchievementsClient achievementsClient = getAchievementsClient();
 		if(achievementsClient == null) {
+			Log.w(tag, "Will fail to show achievements, failed to get achievements cient");
 			return;
 		}
 		
 		Task<Intent> achievementsIntent = achievementsClient.getAchievementsIntent();
 		if(achievementsIntent == null) {
+			Log.w(tag, "Will fail to show achievements, failed to get achievements intent");
 			return;
 		}
 		
@@ -126,23 +167,36 @@ public class GooglePlayGames extends Extension {
 			public void onSuccess(Intent intent) {
 				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_ACHIEVEMENTS);
 			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(Exception e) {
+				Log.w(tag, "Failed to show achievements for reason: " + e.getMessage());
+			}
 		});
 	}
 	
 	public static void showLeaderboard(String id, int timespan) {
-		Log.i(tag, "showLeaderboard");
+		Log.w(tag, "showLeaderboard");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail show leaderboard, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to show leaderboard, not signed in");
 			return;
 		}
 		
 		LeaderboardsClient leaderboardsClient = getLeaderboardsClient();
 		if(leaderboardsClient == null) {
+			Log.w(tag, "Will fail to show leaderboard, failed to get leaderboards client");
 			return;
 		}
 		
 		Task<Intent> leaderboardIntent = leaderboardsClient.getLeaderboardIntent(id, timespan);
 		if(leaderboardIntent == null) {
+			Log.w(tag, "Will fail to show leaderboard, failed to get leaderboard intent");
 			return;
 		}
 		
@@ -150,24 +204,37 @@ public class GooglePlayGames extends Extension {
 			@Override
 			public void onSuccess(Intent intent) {
 				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(Exception e) {
+				Log.w(tag, "Failed to show leaderboard for reason: " + e.getMessage());
 			}
 		});
 	}
 	
 	public static void showLeaderboards() {
-		Log.i(tag, "showLeaderboards");
+		Log.w(tag, "showLeaderboards");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail show leaderboards, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to show leaderboards, not signed in");
 			return;
 		}
 		
 		LeaderboardsClient leaderboardsClient = getLeaderboardsClient();
 		if(leaderboardsClient == null) {
+			Log.w(tag, "Will fail to show leaderboards, failed to get leaderboards client");
 			return;
 		}
 		
 		Task<Intent> leaderboardIntent = leaderboardsClient.getAllLeaderboardsIntent();
 		if(leaderboardIntent == null) {
+			Log.w(tag, "Will fail to show leaderboards, failed to get leaderboards intent");
 			return;
 		}
 		
@@ -176,23 +243,36 @@ public class GooglePlayGames extends Extension {
 			public void onSuccess(Intent intent) {
 				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
 			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(Exception e) {
+				Log.w(tag, "Failed to show leaderboards for reason: " + e.getMessage());
+			}
 		});
 	}
 	
 	public static void incrementAchievement(String id, int numSteps) {
-		Log.i(tag, "incrementAchievement");
+		Log.w(tag, "incrementAchievement");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail increment achievement, Google Play Services unavailable");
+			return;
+		}
 		
 		if(numSteps <= 0) {
+			Log.w(tag, "Will fail to increment achievement, number of steps is negative");
 			return;
 		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to increment achievement, not signed in");
 			return;
 		}
 		
 		AchievementsClient achievementsClient = getAchievementsClient();
 		
 		if(achievementsClient == null) {
+			Log.w(tag, "Will fail to increment achievement, failed to get achievements client");
 			return;
 		}
 		
@@ -200,15 +280,22 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void revealAchievement(String id) {
-		Log.i(tag, "revealAchievement");
+		Log.w(tag, "revealAchievement");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail reveal achievement, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to reveal achievement, not signed in");
 			return;
 		}
 		
 		AchievementsClient achievementsClient = getAchievementsClient();
 		
 		if(achievementsClient == null) {
+			Log.w(tag, "Will fail to increment achievement, failed to get achievements client");
 			return;
 		}
 		
@@ -216,15 +303,22 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void revealAchievementImmediate(String id) {
-		Log.i(tag, "revealAchievementImmediate");
+		Log.w(tag, "revealAchievementImmediate");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail reveal achievement (immediate), Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to reveal achievement (immediate), not signed in");
 			return;
 		}
 		
 		AchievementsClient achievementsClient = getAchievementsClient();
 		
 		if(achievementsClient == null) {
+			Log.w(tag, "Will fail to increment achievement, failed to get achievements client");
 			return;
 		}
 		
@@ -232,19 +326,27 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void setAchievementSteps(String id, int numSteps) {
-		Log.i(tag, "setAchievementSteps");
+		Log.w(tag, "setAchievementSteps");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail set achievement steps, Google Play Services unavailable");
+			return;
+		}
 		
 		if(numSteps <= 0) {
+			Log.w(tag, "Will fail to increment achievement, number of steps is negative");
 			return; // NOTE throws java.lang.IllegalStateException: Number of steps must be greater than 0 otherwise
 		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to set achievement steps, not signed in");
 			return;
 		}
 		
 		AchievementsClient achievementsClient = getAchievementsClient();
 		
 		if(achievementsClient == null) {
+			Log.w(tag, "Will fail to increment achievement, failed to get achievements client");
 			return;
 		}
 		
@@ -252,15 +354,22 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void unlockAchievement(String id) {
-		Log.i(tag, "unlockAchievement");
+		Log.w(tag, "unlockAchievement");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail set unlock achievement, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to unlock achievement, not signed in");
 			return;
 		}
 		
 		AchievementsClient achievementsClient = getAchievementsClient();
 		
 		if(achievementsClient == null) {
+			Log.w(tag, "Will fail to unlock achievement, failed to get achievements client");
 			return;
 		}
 		
@@ -268,14 +377,21 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void submitScore(String leaderboardId, int score, String scoreTag) {
-		Log.i(tag, "submitScore");
+		Log.w(tag, "submitScore");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to submit score, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
+			Log.w(tag, "Will fail to submit score, not signed in");
 			return;
 		}
 		
 		LeaderboardsClient leaderboardsClient = getLeaderboardsClient();
 		if(leaderboardsClient == null) {
+			Log.w(tag, "Will fail to submit score, failed to get leaderboards client");
 			return;
 		}
 		
@@ -287,27 +403,39 @@ public class GooglePlayGames extends Extension {
 	}
 	
 	public static void setGravityForPopups(int horizontalGravity, int verticalGravity) {
-		Log.i(tag, "setGravityForPopups");
+		Log.w(tag, "setGravityForPopups");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to set gravity for popups, Google Play Services unavailable");
+			return;
+		}
 		
 		if(!isSignedIn()) {
-			Log.i(tag, "Not signed in, will fail to set gravity for popups");
+			Log.w(tag, "Will fail to set gravity for popups, not signed in");
+			return;
 		}
 		
 		GamesClient gamesClient = getGamesClient();
 		
 		if(gamesClient == null) {
-			Log.i(tag, "Failed to get games client, will fail to set gravity for popups");
+			Log.w(tag, "Failed to get games client, will fail to set gravity for popups");
+			return;
 		}
 		
 		gamesClient.setGravityForPopups(horizontalGravity | verticalGravity);
 	}
 	
 	public static void signInSilently() {
-		Log.i(tag, "signInSilently");
+		Log.w(tag, "signInSilently");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to sign in silently, Google Play Services unavailable");
+			return;
+		}
 		
 		GoogleSignInClient signInClient = getSignInClient();
 		if(signInClient == null) {
-			Log.w(tag, "Failed to get sign in client");
+			Log.w(tag, "Will fail to sign in silently, failed to get sign in client");
 			return;
 		}
 		
@@ -318,24 +446,29 @@ public class GooglePlayGames extends Extension {
 					callHaxe("onConnected", new Object[] {});
 				} else {
 					// Player will need to sign-in explicitly via the login UI
-					startSignInIntent();
+					callHaxe("onConnectionFailed", new Object[]{ new Integer(GooglePlayGames.SILENT_SIGNIN_FAILED_NEED_USER_LOGIN) });
 				}
 			}
 		});
 	}
 	
 	public static void startSignInIntent() {
-		Log.i("startSignInIntent");
+		Log.w(tag, "startSignInIntent");
+		
+		if(!isGooglePlayServicesAvailable()) {
+			Log.w(tag, "Will fail to start signin intent, Google Play Services unavailable");
+			return;
+		}
 		
 		GoogleSignInClient signInClient = getSignInClient();
 		if(signInClient == null) {
-			Log.i(tag, "Failed to get sign in client");
+			Log.w(tag, "Will fail to sign in silently, failed to get sign in client");
 			return;
 		}
 		
 		Intent intent = signInClient.getSignInIntent();
 		if(intent == null) {
-			Log.i(tag, "Failed to get sign-in intent");
+			Log.w(tag, "Failed to get sign-in intent");
 			return;
 		}
 		

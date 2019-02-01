@@ -16,6 +16,10 @@ class GooglePlayGames {
 		set_listener(listener);
 	}
 	
+	public static function isGooglePlayServicesAvailable():Bool {
+		return is_google_play_services_available();
+	}
+	
 	public static function showLeaderboard(id:String, timespan:LeaderboardTimespan):Void {
 		show_leaderboard(id, timespan);
 	}
@@ -73,6 +77,7 @@ class GooglePlayGames {
 		return JNI.createStaticMethod(packageName, jniMethod, jniSignature);
 	}
 	private static var set_listener = bindJNI("setListener", "(Lorg/haxe/lime/HaxeObject;)V");
+	private static var is_google_play_services_available = bindJNI("isGooglePlayServicesAvailable", "()Z");
 	private static var show_leaderboard = bindJNI("showLeaderboard", "(Ljava/lang/String;I)V");
 	private static var show_leaderboards = bindJNI("showLeaderboards", "()V");
 	private static var show_achievements = bindJNI("showAchievements", "()V");
