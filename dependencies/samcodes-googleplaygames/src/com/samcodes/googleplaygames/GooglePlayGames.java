@@ -167,13 +167,7 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
-		Task<Intent> achievementsIntent = achievementsClient.getAchievementsIntent();
-		if(achievementsIntent == null) {
-			Log.w(tag, "Will fail to show achievements, failed to get achievements intent");
-			return;
-		}
-		
-		achievementsIntent.addOnSuccessListener(new OnSuccessListener<Intent>() {
+		achievementsClient.getAchievementsIntent().addOnSuccessListener(new OnSuccessListener<Intent>() {
 			@Override
 			public void onSuccess(Intent intent) {
 				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_ACHIEVEMENTS);
@@ -205,13 +199,7 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
-		Task<Intent> leaderboardIntent = leaderboardsClient.getLeaderboardIntent(id, timespan);
-		if(leaderboardIntent == null) {
-			Log.w(tag, "Will fail to show leaderboard, failed to get leaderboard intent");
-			return;
-		}
-		
-		leaderboardIntent.addOnSuccessListener(new OnSuccessListener<Intent>() {
+		leaderboardsClient.getLeaderboardIntent(id, timespan).addOnSuccessListener(new OnSuccessListener<Intent>() {
 			@Override
 			public void onSuccess(Intent intent) {
 				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
@@ -243,13 +231,7 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
-		Task<Intent> leaderboardIntent = leaderboardsClient.getAllLeaderboardsIntent();
-		if(leaderboardIntent == null) {
-			Log.w(tag, "Will fail to show leaderboards, failed to get leaderboards intent");
-			return;
-		}
-		
-		leaderboardIntent.addOnSuccessListener(new OnSuccessListener<Intent>() {
+		leaderboardsClient.getAllLeaderboardsIntent().addOnSuccessListener(new OnSuccessListener<Intent>() {
 			@Override
 			public void onSuccess(Intent intent) {
 				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
@@ -544,7 +526,7 @@ public class GooglePlayGames extends Extension {
 			
 			// The ApiException status code indicates the detailed failure reason.
 			// Refer to the GoogleSignInStatusCodes class reference for more information.
-			// Note, in principle this could also be one of the other CommonStatusCodes
+			// Note, in principle this could also be one of the other CommonStatusCodes.
 			Log.w(tag, "Sign in result contained a failure code of: " + e.getStatusCode());
 			
 			int statusCode = (int)(e.getStatusCode());
