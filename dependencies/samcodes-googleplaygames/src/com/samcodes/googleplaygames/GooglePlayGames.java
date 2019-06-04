@@ -108,6 +108,11 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
+		if(isSignedIn()) {
+			Log.w(tag, "Will not attempt to sign in, user already appears to be signed in");
+			return;
+		}
+		
 		if(viaAuthDialogIfNecessary) {
 			signInViaDialogIfNecessary();
 		} else {
@@ -123,7 +128,7 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
-		GoogleSignInClient signInClient = GoogleSignIn.getClient(Extension.mainActivity, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+		GoogleSignInClient signInClient = getSignInClient();
 		if(signInClient == null) {
 			Log.w(tag, "Will fail to sign out, failed to get signin client");
 			return;
@@ -145,7 +150,17 @@ public class GooglePlayGames extends Extension {
 			return false;
 		}
 		
-		return getLastSignedInAccount() != null;
+		GoogleSignInAccount account = getLastSignedInAccount();
+		if(account == null) {
+			return false;
+		}
+		
+		GoogleSignInOptions signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN;
+		if(!GoogleSignIn.hasPermissions(account, signInOptions.getScopeArray())) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public static void showAchievements() {
@@ -426,6 +441,11 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
+		if(isSignedIn()) {
+			Log.w(tag, "Will not attempt to sign in, user already appears to be signed in");
+			return;
+		}
+		
 		GoogleSignInClient signInClient = getSignInClient();
 		if(signInClient == null) {
 			Log.w(tag, "Will fail to sign in silently, failed to get sign in client");
@@ -453,6 +473,11 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
+		if(isSignedIn()) {
+			Log.w(tag, "Will not attempt to sign in, user already appears to be signed in");
+			return;
+		}
+		
 		GoogleSignInClient signInClient = getSignInClient();
 		if(signInClient == null) {
 			Log.w(tag, "Will fail to sign in (via dialog if necessary), failed to get sign in client");
@@ -476,6 +501,11 @@ public class GooglePlayGames extends Extension {
 		
 		if(!isGooglePlayServicesAvailable()) {
 			Log.w(tag, "Will fail to start signin intent, Google Play Services unavailable");
+			return;
+		}
+		
+		if(isSignedIn()) {
+			Log.w(tag, "Will not start sign in intent, user already appears to be signed in");
 			return;
 		}
 		
