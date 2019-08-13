@@ -223,7 +223,7 @@ public class GooglePlayGames extends Extension {
 			public void onSuccess(Intent intent) {
 				try {
 					Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
-				catch(Exception e) {
+				} catch(Exception e) {
 					Log.w(tag, "Failed to start leaderboards activity for reason: " + e.getMessage());
 				}
 			}
@@ -257,7 +257,11 @@ public class GooglePlayGames extends Extension {
 		leaderboardsClient.getAllLeaderboardsIntent().addOnSuccessListener(new OnSuccessListener<Intent>() {
 			@Override
 			public void onSuccess(Intent intent) {
-				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
+				try {
+					Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
+				} catch(Exception e) {
+					Log.w(tag, "Failed to start leaderboards activity for reason: " + e.getMessage());
+				}
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
@@ -529,7 +533,12 @@ public class GooglePlayGames extends Extension {
 			return;
 		}
 		
-		Extension.mainActivity.startActivityForResult(intent, RC_SIGN_IN);
+		
+		try {
+			Extension.mainActivity.startActivityForResult(intent, RC_SIGN_IN);
+		} catch(Exception e) {
+			Log.w(tag, "Failed to start sign-in activity for reason: " + e.getMessage());
+		}
 	}
 	
 	private static void callHaxe(final String name, final Object[] args) {
