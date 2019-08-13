@@ -185,7 +185,11 @@ public class GooglePlayGames extends Extension {
 		achievementsClient.getAchievementsIntent().addOnSuccessListener(new OnSuccessListener<Intent>() {
 			@Override
 			public void onSuccess(Intent intent) {
-				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_ACHIEVEMENTS);
+				try {
+					Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_ACHIEVEMENTS);
+				} catch(Exception e) {
+					Log.w(tag, "Failed to start achievements activity for reason: " + e.getMessage());
+				}
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
@@ -217,7 +221,11 @@ public class GooglePlayGames extends Extension {
 		leaderboardsClient.getLeaderboardIntent(id, timespan).addOnSuccessListener(new OnSuccessListener<Intent>() {
 			@Override
 			public void onSuccess(Intent intent) {
-				Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
+				try {
+					Extension.mainActivity.startActivityForResult(intent, REQUEST_SHOW_LEADERBOARDS);
+				catch(Exception e) {
+					Log.w(tag, "Failed to start leaderboards activity for reason: " + e.getMessage());
+				}
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
