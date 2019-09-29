@@ -6,7 +6,11 @@ import extension.googleplaygames.GooglePlayGravity;
 import extension.googleplaygames.GooglePlayLeaderboardTimespan;
 import extension.googleplaygames.GooglePlayListener;
 
+#if (openfl < "4.0.0")
+import openfl.utils.JNI;
+#else
 import lime.system.JNI;
+#end
 
 class GooglePlayGames {
 	public static function init() {
